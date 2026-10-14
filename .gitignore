@@ -1,0 +1,24 @@
+# 依赖（31M，用 npm install 还原）
+node_modules/
+
+# copy-web.js 从根目录生成的 Capacitor web 资源
+www/
+
+# 打包产物：APK（每个约 4M，且是二进制）
+dist/
+
+# 操作系统 / 编辑器杂物
+.DS_Store
+Thumbs.db
+*.lnk
+.idea/
+.vscode/
+*.swp
+
+# 日志
+*.log
+npm-debug.log*
+
+# 说明：android/ 下另有一份 Capacitor 生成的 .gitignore，
+# 已排除 .gradle/、build/、local.properties、capacitor-cordova-android-plugins/、
+# 以及 cap sync 生成的 app/src/main/assets/public 等，这里无需重复。

@@ -1,0 +1,17 @@
+{
+  "name": "shizi",
+  "version": "1.1.1",
+  "description": "基于艾宾浩斯遗忘曲线的本地儿童识字应用（Capacitor 安卓版）",
+  "scripts": {
+    "test": "node smoke-store.js",
+    "sync": "node copy-web.js",
+    "version": "node set-version.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/core": "^8.5.1",
+    "@capacitor/preferences": "^8.0.1"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "appId": "com.shizi.app",
+  "appName": "儿童识字",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>儿童识字</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <main class="app-main">
+      <!-- 学习 -->
+      <section id="view-learn" class="view active">
+        <div id="learn-progress" class="progress"></div>
+        <div id="learn-stage">
+          <div id="learn-char" class="big-char">字</div>
+        </div>
+        <div id="learn-empty" class="empty hidden">
+          <div class="empty-emoji">🎉</div>
+          <p id="learn-empty-text">今天的字都学完啦！</p>
+          <!-- 今日总结：今天学过的字，按 认识/模糊/不认识 分组，由 JS 填充 -->
+          <div id="learn-summary" class="learn-summary hidden"></div>
+        </div>
+        <div id="learn-buttons" class="buttons">
+          <button class="btn btn-know" data-result="know">认识</button>
+          <button class="btn btn-vague" data-result="vague">模糊</button>
+          <button class="btn btn-dontknow" data-result="dontknow">不认识</button>
+        </div>
+      </section>
+
+      <!-- 汉字库 -->
+      <section id="view-library" class="view">
+        <div class="add-row">
+          <input id="add-char-input" type="text" placeholder="输入要添加的汉字" maxlength="100">
+          <button id="add-char-btn" class="btn btn-primary">添加</button>
+        </div>
+        <div id="library-stats" class="subtitle"></div>
+        <div id="char-groups"></div>
+      </section>
+
+      <!-- 统计 -->
+      <section id="view-stats" class="view">
+        <div class="section-title">今日学习</div>
+        <div class="stat-grid stat-grid-3">
+          <div class="stat-card"><div class="num num-know" id="stat-today-know">0</div><div class="label">认识</div></div>
+          <div class="stat-card"><div class="num num-vague" id="stat-today-vague">0</div><div class="label">模糊</div></div>
+          <div class="stat-card"><div class="num num-dontknow" id="stat-today-dontknow">0</div><div class="label">不认识</div></div>
+        </div>
+        <div class="section-title">累计</div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="num" id="stat-total">0</div><div class="label">汉字总数</div></div>
+          <div class="stat-card"><div class="num" id="stat-learned">0</div><div class="label">已学</div></div>
+          <div class="stat-card"><div class="num" id="stat-unlearned">0</div><div class="label">未学</div></div>
+          <div class="stat-card"><div class="num" id="stat-mastered">0</div><div class="label">已掌握</div></div>
+          <div class="stat-card"><div class="num" id="stat-due">0</div><div class="label">今日待复习</div></div>
+        </div>
+      </section>
+
+      <!-- 设置 -->
+      <section id="view-settings" class="view">
+        <div class="setting-row">
+          <label for="daily-new-input">每天学习新字数</label>
+          <input id="daily-new-input" type="number" min="1" max="100" value="5">
+        </div>
+        <button id="save-settings-btn" class="btn btn-primary">保存设置</button>
+
+        <hr>
+
+        <div class="setting-row">
+          <label>版本</label>
+          <span id="app-version" class="version-text"></span>
+        </div>
+
+        <hr>
+
+        <div class="setting-row">
+          <label>重置学习进度（保留汉字库）</label>
+          <button id="reset-progress-btn" class="btn btn-small btn-danger">重置进度</button>
+        </div>
+        <div class="setting-row">
+          <label>清空全部（汉字 + 进度）</label>
+          <button id="clear-all-btn" class="btn btn-small btn-danger">清空全部</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="app-nav">
+      <button class="tab active" data-view="learn">学习</button>
+      <button class="tab" data-view="library">汉字库</button>
+      <button class="tab" data-view="stats">统计</button>
+      <button class="tab" data-view="settings">设置</button>
+    </nav>
+  </div>
+
+  <!-- 今日任务预览：启动闸门，未点确认前盖住整个 app -->
+  <div id="today-screen" class="today-screen hidden">
+    <div class="today-inner">
+      <h1 class="today-title">今天的字</h1>
+      <p id="today-subtitle" class="today-subtitle"></p>
+      <div id="today-body"></div>
+      <button id="today-start-btn" class="btn btn-primary today-btn">开始学习</button>
+    </div>
+  </div>
+
+  <!-- 长按汉字行弹出的「修改今日标记」面板 -->
+  <div id="edit-sheet" class="sheet hidden">
+    <div id="sheet-backdrop" class="sheet-backdrop"></div>
+    <div class="sheet-panel">
+      <div id="sheet-char" class="sheet-char">字</div>
+      <div id="sheet-hint" class="sheet-hint"></div>
+      <div id="sheet-options" class="sheet-options">
+        <button class="btn btn-know" data-result="know">认识</button>
+        <button class="btn btn-vague" data-result="vague">模糊</button>
+        <button class="btn btn-dontknow" data-result="dontknow">不认识</button>
+      </div>
+      <button id="sheet-cancel" class="btn btn-cancel">取消</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="js/version.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/srs.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# 统一换行符，避免跨平台 clone 后出现整文件 diff、或 .bat 在 cmd 下解析失败
+# 仓库内部一律存 LF
+* text=auto eol=lf
+
+# Windows 批处理必须用 CRLF，否则 cmd.exe 会把命令拆错行（本项目踩过这个坑）
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 二进制文件不要做换行转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.jar binary
+*.apk binary
+*.keystore binary
+*.jks binary

@@ -1,0 +1,314 @@
+:root {
+  --bg: #fdf6ec;
+  --card: #ffffff;
+  --ink: #3a2d1f;
+  --muted: #9a8b76;
+  --know: #3eb370;
+  --vague: #f0a92b;
+  --dontknow: #e2574c;
+  --primary: #4a90d9;
+  --danger: #e2574c;
+  --shadow: 0 4px 16px rgba(60, 40, 10, 0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  justify-content: center;
+}
+
+#app {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.app-main {
+  flex: 1;
+  padding: 24px 16px 24px;
+  overflow-y: auto;
+}
+
+.view { display: none; }
+.view.active { display: block; animation: fade .2s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ---------- 学习页 ---------- */
+.progress { text-align: center; color: var(--muted); margin-bottom: 10px; font-size: 16px; font-weight: 600; }
+
+#learn-stage {
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 40px 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.big-char {
+  font-size: 120px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.empty { text-align: center; padding: 60px 20px; }
+.empty-emoji { font-size: 64px; }
+.empty p { margin-top: 12px; color: var(--muted); font-size: 18px; }
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.btn {
+  border: none;
+  border-radius: 16px;
+  padding: 18px 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: transform .06s ease, filter .1s ease;
+}
+.btn:active { transform: scale(.96); }
+
+.btn-know { background: var(--know); }
+.btn-vague { background: var(--vague); }
+.btn-dontknow { background: var(--dontknow); }
+.btn-primary { background: var(--primary); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-small { padding: 8px 12px; font-size: 14px; border-radius: 10px; }
+
+/* ---------- 汉字库 ---------- */
+.add-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.add-row input {
+  flex: 1;
+  padding: 14px;
+  font-size: 18px;
+  border: 1px solid #e8dcc8;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+}
+.subtitle { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+
+/* 按状态分组折叠：折叠的分组不渲染行，字多时不会一次生成几百个节点 */
+.char-group { margin-bottom: 12px; }
+.char-group-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 14px;
+  border: none;
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: 0 2px 8px rgba(60, 40, 10, .05);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+.char-group-head:active { transform: scale(.99); }
+.char-group-title { flex: 1; text-align: left; }
+.char-group-count { color: var(--muted); font-weight: 400; font-size: 14px; }
+.char-group-arrow { color: var(--muted); font-size: 13px; }
+
+.char-list { list-style: none; margin-top: 8px; }
+.char-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(60, 40, 10, .05);
+  /* 长按改标记：禁掉长按选中文字/系统菜单 */
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.char-item-char { font-size: 28px; font-weight: 700; width: 44px; text-align: center; }
+.char-item-status { flex: 1; color: var(--muted); font-size: 13px; }
+.char-item-today { font-weight: 600; }
+.char-item-today.is-know { color: var(--know); }
+.char-item-today.is-vague { color: var(--vague); }
+.char-item-today.is-dontknow { color: var(--dontknow); }
+.char-empty { color: var(--muted); text-align: center; padding: 30px 0; }
+
+/* ---------- 长按修改标记面板 ---------- */
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.sheet-backdrop { position: absolute; inset: 0; background: rgba(40, 30, 15, .45); }
+.sheet-panel {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  padding: 22px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -6px 24px rgba(60, 40, 10, .15);
+}
+.sheet-char { font-size: 56px; font-weight: 700; text-align: center; color: var(--ink); line-height: 1.1; }
+.sheet-hint { text-align: center; color: var(--muted); font-size: 14px; margin: 6px 0 18px; }
+.sheet-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+/* 当前标记用白色内圈标出来 */
+.sheet-options .btn.is-current { box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .95); }
+.btn-cancel { background: #e8dcc8; color: var(--ink); width: 100%; margin-top: 12px; }
+
+/* ---------- 统计 ---------- */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-card .num { font-size: 32px; font-weight: 700; color: var(--ink); }
+.stat-card .label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* ---------- 设置 ---------- */
+.setting-row {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(60, 40, 10, .05);
+}
+.setting-row label { font-size: 16px; flex: 1; }
+.version-text { color: var(--muted); font-size: 15px; }
+.setting-row input {
+  width: 90px;
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  border: 1px solid #e8dcc8;
+  border-radius: 10px;
+  color: var(--ink);
+}
+hr { border: none; border-top: 1px solid #efe4d2; margin: 18px 0; }
+
+/* ---------- 导航 ---------- */
+.app-nav {
+  display: flex;
+  border-top: 1px solid #efe4d2;
+  background: #fff;
+}
+.tab {
+  flex: 1;
+  padding: 14px 0;
+  border: none;
+  background: none;
+  font-size: 15px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.tab.active { color: var(--primary); font-weight: 700; }
+
+/* ---------- 提示浮层 ---------- */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(40, 30, 15, .85);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  z-index: 100;
+}
+
+/* ---------- 今日任务预览（启动闸门） ---------- */
+/* 汉字可能有几百个（复习队列无上限），所以标题和按钮固定，只让汉字区滚动 */
+.today-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+}
+.today-inner {
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  padding: 28px 16px 16px;
+  display: flex;
+  flex-direction: column;
+}
+.today-title { font-size: 24px; text-align: center; color: var(--ink); }
+.today-subtitle { text-align: center; color: var(--muted); font-size: 15px; margin: 6px 0 16px; }
+#today-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.today-group { margin-bottom: 20px; }
+.today-group-title { font-size: 15px; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
+.today-chars { display: flex; flex-wrap: wrap; gap: 10px; }
+.today-char {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border-radius: 14px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  box-shadow: 0 2px 8px rgba(60, 40, 10, .05);
+}
+/* 今天新学的字用主色区分，和复习的字一眼看得出 */
+.today-char.is-new { color: var(--primary); }
+.today-empty { text-align: center; color: var(--muted); font-size: 17px; padding: 40px 0; }
+.today-btn { margin-top: 12px; flex-shrink: 0; }
+
+/* ---------- 今日总结 ---------- */
+.section-title { font-size: 15px; font-weight: 600; color: var(--muted); margin: 4px 0 10px; }
+.stat-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+/* 总结按结果分组列出今天学过的字，配色与学习页三个按钮一致 */
+.learn-summary { margin-top: 26px; text-align: left; }
+.title-know, .today-char.is-know { color: var(--know); }
+.title-vague, .today-char.is-vague { color: var(--vague); }
+.title-dontknow, .today-char.is-dontknow { color: var(--dontknow); }
+
+/* 统计页的今日数字 */
+.num-know { color: var(--know); }
+.num-vague { color: var(--vague); }
+.num-dontknow { color: var(--dontknow); }
+
+.hidden { display: none !important; }
